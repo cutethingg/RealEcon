@@ -1,14 +1,21 @@
 package com.femtendo.realecon;
 
+import com.femtendo.realecon.init.ModBlockEntities;
+import com.femtendo.realecon.init.ModBlocks;
+import com.femtendo.realecon.init.ModCreativeModeTabs;
 import com.femtendo.realecon.init.ModItems;
 import com.femtendo.realecon.init.ModMenuTypes;
+import com.femtendo.realecon.network.PacketHandler;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(RealEcon.MODID)
@@ -21,13 +28,13 @@ public class RealEcon {
 
         // 1. Register ALL our content (Items, Blocks, BlockEntities, Menus)
         ModItems.ITEMS.register(modEventBus);
-        com.femtendo.realecon.init.ModBlocks.BLOCKS.register(modEventBus);
-        com.femtendo.realecon.init.ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModMenuTypes.MENUS.register(modEventBus);
+        ModCreativeModeTabs.register(modEventBus);
 
         // Tells Forge to run our setups and inject into the Creative Menu
-        com.femtendo.realecon.init.ModCreativeModeTabs.register(modEventBus);
-        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::setup);
         modEventBus.addListener(this::addCreative);
 
         // 2. Register our Configs
@@ -37,19 +44,16 @@ public class RealEcon {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void commonSetup(final net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            com.femtendo.realecon.network.PacketHandler.register();
-        });
+    private void setup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(PacketHandler::register);
     }
 
     // NEW: Puts our custom items into the standard "Functional Blocks" creative tab
-    private void addCreative(net.minecraftforge.event.BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == net.minecraft.world.item.CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(com.femtendo.realecon.init.ModBlocks.WAGEBOX);
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(ModBlocks.WAGEBOX);
             event.accept(ModItems.TRADE_LEDGER);
             event.accept(ModItems.MASTER_LEDGER);
-            event.accept(ModItems.PHYSICAL_COIN);
         }
     }
 

@@ -1,24 +1,32 @@
 modLoader="javafml"
-loaderVersion="[47,)"
-license="MIT"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 
 [[mods]]
-modId="realecon"
+modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
-description="${mod_description}"
+description='''${mod_description}'''
 
-[[dependencies.realecon]]
+[[dependencies.${mod_id}]]
 modId="forge"
 mandatory=true
-versionRange="[47.4.10,)"
+versionRange="${forge_version_range}"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.realecon]]
+[[dependencies.${mod_id}]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.20.1,1.21)"
+versionRange="${minecraft_version_range}"
 ordering="NONE"
+side="BOTH"
+
+# NEW: Required dependency on Create so the game warns users if it is missing
+[[dependencies.${mod_id}]]
+modId="create"
+mandatory=true
+versionRange="[0.5.1,)"
+ordering="AFTER"
 side="BOTH"

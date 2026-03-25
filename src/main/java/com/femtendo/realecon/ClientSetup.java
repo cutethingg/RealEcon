@@ -1,6 +1,5 @@
 package com.femtendo.realecon;
 
-// Imports must come AFTER the package statement
 import com.femtendo.realecon.content.ledger.gui.TradeLedgerScreen;
 import com.femtendo.realecon.content.ledger.gui.WageboxStorageScreen;
 import com.femtendo.realecon.init.ModMenuTypes;

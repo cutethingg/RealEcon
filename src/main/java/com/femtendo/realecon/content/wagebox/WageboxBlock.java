@@ -117,10 +117,10 @@ public class WageboxBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock()) && !level.isClientSide() && level instanceof ServerLevel serverLevel) {
-            EmpireManager.get(serverLevel).unregisterWagebox(pos);
+    public void onRemove(BlockState state, net.minecraft.world.level.Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
+            // DO NOT drop contents here anymore! The Loot Table handles it safely.
+            super.onRemove(state, level, pos, newState, isMoving);
         }
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 }
