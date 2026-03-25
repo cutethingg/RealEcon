@@ -1,3 +1,4 @@
+WIP
 # RealEcon
 📈 RealEcon Mod Documentation
 Welcome to the official wiki for RealEcon, a dynamic, player-driven economy mod for Minecraft Forge. RealEcon transforms static server shops into a breathing commodities market using graph-theory mathematics, automated storefronts, and comprehensive ledger tracking.
