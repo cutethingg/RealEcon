@@ -71,4 +71,15 @@ public class RealEcon {
             CurrencyCache.rebuildCache();
         }
     }
+    // --- 0.9.9.10 FIX: INSTANT MARKET SEEDING ---
+    @SubscribeEvent
+    public void onServerStarted(net.minecraftforge.event.server.ServerStartedEvent event) {
+        com.femtendo.realecon.logic.market.GlobalMarketManager market = com.femtendo.realecon.logic.market.GlobalMarketManager.get(event.getServer());
+
+        // If the market index is completely empty (first boot or wiped data),
+        // force an immediate epoch run to populate all the baseline prices!
+        if (market.getPriceIndex().isEmpty()) {
+            market.checkAndRunEpoch(event.getServer(), true);
+        }
+    }
 }

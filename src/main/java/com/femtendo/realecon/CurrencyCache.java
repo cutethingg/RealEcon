@@ -69,4 +69,8 @@ public class CurrencyCache {
     public static int getBlockValue(BlockState state) {
         return blockValues.getOrDefault(state.getBlock(), 0);
     }
+    // --- API HELPER: Allows outside classes to safely read the fixed currencies ---
+    public static Map<Item, Integer> getItemValues() {
+        return itemValues;
+    }
 }

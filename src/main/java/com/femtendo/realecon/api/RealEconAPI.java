@@ -35,10 +35,19 @@ public class RealEconAPI implements IRealEconAPI {
     public double getItemValue(ServerLevel level, ResourceLocation itemId) {
         if (level == null || itemId == null) return 0.0;
 
+        // Convert the string ID into an actual Minecraft Item
+        net.minecraft.world.item.Item item = ForgeRegistries.ITEMS.getValue(itemId);
+
+        // --- THEORY 3 FIX: CHECK FIXED CURRENCIES FIRST ---
+        if (item != null && com.femtendo.realecon.CurrencyCache.getItemValues().containsKey(item)) {
+            return com.femtendo.realecon.CurrencyCache.getItemValues().get(item);
+        }
+        // --------------------------------------------------
+
+        // Otherwise, ask the fluctuating market
         GlobalMarketManager market = GlobalMarketManager.get(level.getServer());
         return market.getPriceIndex().getOrDefault(itemId.toString(), 0.0);
     }
-
     @Override
     public double getItemValue(ServerLevel level, ItemStack stack) {
         if (stack.isEmpty()) return 0.0;
@@ -77,7 +86,19 @@ public class RealEconAPI implements IRealEconAPI {
         if (level == null) return Collections.emptyMap();
 
         GlobalMarketManager market = GlobalMarketManager.get(level.getServer());
-        return Collections.unmodifiableMap(market.getPriceIndex());
+
+        // Create a new master map to hold everything
+        Map<String, Double> unifiedMarket = new java.util.HashMap<>(market.getPriceIndex());
+
+        // Pour in the static config currencies
+        for (Map.Entry<net.minecraft.world.item.Item, Integer> entry : com.femtendo.realecon.CurrencyCache.getItemValues().entrySet()) {
+            ResourceLocation id = ForgeRegistries.ITEMS.getKey(entry.getKey());
+            if (id != null) {
+                unifiedMarket.put(id.toString(), entry.getValue().doubleValue());
+            }
+        }
+
+        return Collections.unmodifiableMap(unifiedMarket);
     }
 
     @Override
