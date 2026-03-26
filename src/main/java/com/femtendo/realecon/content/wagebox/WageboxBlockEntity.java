@@ -171,8 +171,24 @@ public class WageboxBlockEntity extends BlockEntity implements MenuProvider {
         // Halt UI updates temporarily while we move items around
         this.isProcessingTrade = true;
 
-        ItemStack targetReward = offer.getResult();
+        ItemStack targetReward = offer.getResult().copy();
         ItemStack bountyReceived = offer.getBaseCostA().copy();
+
+        // --- API INJECTION: FIRE WAGEBOX TRADE EVENT ---
+        com.femtendo.realecon.api.events.WageboxTradeEvent event = new com.femtendo.realecon.api.events.WageboxTradeEvent(
+                this.getBlockPos(), buyer, this.ownerId, bountyReceived, targetReward
+        );
+
+        // If Fiefdom (or another mod) cancels the event, stop the trade entirely!
+        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) {
+            this.isProcessingTrade = false;
+            return;
+        }
+
+        // Apply any taxes or modifications the other mod made to the items
+        targetReward = event.getReward();
+        bountyReceived = event.getBounty();
+        // -----------------------------------------------
 
         int amountToExtract = targetReward.getCount();
 

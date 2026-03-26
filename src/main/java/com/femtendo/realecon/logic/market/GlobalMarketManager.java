@@ -116,6 +116,17 @@ public class GlobalMarketManager extends SavedData {
         this.setDirty();
 
         server.getPlayerList().broadcastSystemMessage(net.minecraft.network.chat.Component.literal("§6[RealEcon] §eGlobal Market Prices Updated!"), false);
+
+        // --- API INJECTION: FIRE MARKET UPDATE EVENT ---
+        if (server.overworld() != null) {
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
+                    new com.femtendo.realecon.api.events.MarketUpdateEvent(
+                            server.overworld(),
+                            java.util.Collections.unmodifiableMap(this.currentPriceIndex)
+                    )
+            );
+        }
+        // -----------------------------------------------
     }
 
     public Map<String, Double> getPriceIndex() { return currentPriceIndex; }
