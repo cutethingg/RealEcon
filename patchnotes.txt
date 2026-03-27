@@ -1,1 +1,2 @@
-- 0.9.9.10 Api fixes to allow fiefdoms to kiss (read what items are in config as priced). Includes any generated item prices. 
+- 0.9.9.10 Api fixes to allow fiefdoms to kiss (read what items are in config as priced).
+- 0.9.9.11 FIXED: Use the unified index that includes the static CurrencyCache (Gold!)

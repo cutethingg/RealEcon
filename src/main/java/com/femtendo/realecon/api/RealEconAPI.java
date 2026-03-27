@@ -63,8 +63,8 @@ public class RealEconAPI implements IRealEconAPI {
     public double getInventoryValue(ServerLevel level, IItemHandler inventory) {
         if (level == null || inventory == null) return 0.0;
 
-        GlobalMarketManager market = GlobalMarketManager.get(level.getServer());
-        Map<String, Double> index = market.getPriceIndex();
+        // FIXED: Use the unified index that includes the static CurrencyCache (Gold!)
+        Map<String, Double> index = getLiveMarketIndex(level);
 
         double totalValue = 0.0;
 
